@@ -46,7 +46,8 @@ func (e *Encoder) Encode(input []byte) []Block {
 		dataBlock := data[i*e.dataBlocks : (i+1)*e.dataBlocks]
 		mul := math.Mul(vandermore, getDataBlockMatrix(dataBlock), galoisAlgebra)
 		checkBlock := getCheckBlock(mul)
-		resultBlocks[i] = append(dataBlock, checkBlock...)
+		resultBlocks[i] = append(resultBlocks[i], dataBlock...)
+		resultBlocks[i] = append(resultBlocks[i], checkBlock...)
 	}
 	for i := 0; i < e.dataBlocks+e.checksumBlocks; i++ {
 		block := new(Block)
