@@ -52,11 +52,16 @@ func TestExtend(t *testing.T) {
 	}
 }
 
-func TestEncoder_Encode(t *testing.T) {
+func TestEncode(t *testing.T) {
 	encoder := NewEncoder(3, 3, 4)
 	input := []byte{7, 3, 2}
 	output := encoder.Encode(input)
-	if output == nil {
-		t.Errorf("Nil")
+	expectedBlockData := []byte{7, 3, 2, 6, 7, 1}
+	expectedBlockTypes := []BlockType{Data, Data, Data, Checksum, Checksum, Checksum}
+	for i := range output {
+		if output[i].w[0] != expectedBlockData[i] || output[i].blockType != expectedBlockTypes[i] {
+			t.Errorf("Block [%d] is wrong. Expected value [%d]. Actual value [%d]", i, expectedBlockData[i], output[i].w[0])
+			t.Errorf("Block [%d] is wrong. Expected type [%d]. Actual type [%d]", i, expectedBlockTypes[i], output[i].blockType)
+		}
 	}
 }

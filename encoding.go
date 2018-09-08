@@ -57,9 +57,10 @@ func (e *Encoder) Encode(input []byte) []Block {
 			block.blockType = Checksum
 		}
 		for j := 0; j < len(resultBlocks); j++ {
-			blockData[j] = resultBlocks[i][j]
+			blockData[j] = resultBlocks[j][i]
 		}
 		block.w = blockData
+		blocks[i] = *block
 	}
 	return blocks
 }
@@ -67,6 +68,7 @@ func (e *Encoder) Encode(input []byte) []Block {
 func getDataBlockMatrix(data []byte) [][]byte {
 	result := make([][]byte, len(data))
 	for i := 0; i < len(data); i++ {
+		result[i] = make([]byte, 1)
 		result[i][0] = data[i]
 	}
 	return result
