@@ -6,7 +6,6 @@ import (
 )
 
 type Encoder struct {
-	blocks         []Block
 	dataBlocks     int
 	checksumBlocks int
 	degree         byte
@@ -14,7 +13,6 @@ type Encoder struct {
 
 func NewEncoder(dataBlocks, checksumBlocks int, degree byte) *Encoder {
 	encoder := new(Encoder)
-	encoder.blocks = make([]Block, dataBlocks+checksumBlocks)
 	encoder.dataBlocks = dataBlocks
 	encoder.checksumBlocks = checksumBlocks
 	encoder.degree = degree

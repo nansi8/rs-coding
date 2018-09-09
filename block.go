@@ -53,6 +53,19 @@ func vandermore(rows, cols int, alg math.ByteAlgebra) [][]byte {
 	return result
 }
 
+func identity(size int) [][]byte {
+	identity := make([][]byte, size)
+	for i := 0; i < size; i++ {
+		identity[i] = make([]byte, size)
+		for j := 0; j < size; j++ {
+			if i == j {
+				identity[i][j] = 1
+			}
+		}
+	}
+	return identity
+}
+
 // returns a^x
 func pow(a, x byte, alg math.ByteAlgebra) byte {
 	if x == 0 {
