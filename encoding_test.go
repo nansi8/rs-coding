@@ -86,9 +86,10 @@ func TestEncodeGF256(t *testing.T) {
 	expectedBlockData := []byte{78, 92, 94, 21, 12, 36, 113, 164, 115, 109}
 	expectedBlockTypes := []BlockType{Data, Data, Data, Data, Data, Data, Checksum, Checksum, Checksum, Checksum}
 	for i := range output {
-		if output[i].w[0] != expectedBlockData[i] || output[i].blockType != expectedBlockTypes[i] {
+		if output[i].w[0] != expectedBlockData[i] || output[i].blockType != expectedBlockTypes[i] || output[i].index != i {
 			t.Errorf("Block [%d] is wrong. Expected value [%d]. Actual value [%d]", i, expectedBlockData[i], output[i].w[0])
 			t.Errorf("Block [%d] is wrong. Expected type [%d]. Actual type [%d]", i, expectedBlockTypes[i], output[i].blockType)
+			t.Errorf("Block [%d] is wrong. Expected index [%d]. Actual index [%d]", i, i, output[i].index)
 		}
 	}
 }

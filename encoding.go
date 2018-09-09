@@ -14,6 +14,7 @@ const (
 )
 
 type Block struct {
+	index     int
 	w         []byte
 	blockType BlockType
 }
@@ -51,12 +52,13 @@ func (e *Encoder) Encode(input []byte) []Block {
 	}
 	for i := 0; i < e.dataBlocks+e.checksumBlocks; i++ {
 		block := new(Block)
-		blockData := make([]byte, blocksNumber)
+		block.index = i
 		if i < e.dataBlocks {
 			block.blockType = Data
 		} else {
 			block.blockType = Checksum
 		}
+		blockData := make([]byte, blocksNumber)
 		for j := 0; j < len(resultBlocks); j++ {
 			blockData[j] = resultBlocks[j][i]
 		}
