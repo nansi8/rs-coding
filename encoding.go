@@ -39,7 +39,7 @@ func (e *Encoder) Encode(input []byte) []Block {
 
 	data := extend(input, blocksNumber*e.dataBlocks)
 	galoisAlgebra := math.New(e.degree)
-	vandermore := vandermore(e.dataBlocks, e.checksumBlocks, galoisAlgebra)
+	vandermore := vandermore(e.checksumBlocks, e.dataBlocks, galoisAlgebra)
 	resultBlocks := make([][]byte, blocksNumber)
 	blocks := make([]Block, e.dataBlocks+e.checksumBlocks)
 	for i := 0; i < blocksNumber; i++ {
@@ -92,11 +92,11 @@ func extend(data []byte, length int) []byte {
 	return result
 }
 
-func vandermore(m, n int, alg math.ByteAlgebra) [][]byte {
-	result := make([][]byte, m)
-	for i := 0; i < m; i++ {
-		result[i] = make([]byte, n)
-		for j := 0; j < n; j++ {
+func vandermore(rows, cols int, alg math.ByteAlgebra) [][]byte {
+	result := make([][]byte, rows)
+	for i := 0; i < rows; i++ {
+		result[i] = make([]byte, cols)
+		for j := 0; j < cols; j++ {
 			result[i][j] = pow(byte(j+1), byte(i), alg)
 		}
 	}

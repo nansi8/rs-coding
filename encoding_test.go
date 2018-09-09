@@ -52,12 +52,39 @@ func TestExtend(t *testing.T) {
 	}
 }
 
+func TestExtendSmall(t *testing.T) {
+	data := []byte{0, 1, 2, 3, 4, 5}
+	result := extend(data, 1)
+	if len(result) != len(data) {
+		t.Errorf("Result length must be equal to original length, but it is %d", len(result))
+	}
+	for i := range data {
+		if data[i] != result[i] {
+			t.Errorf("Values of slices in index %d are different. Original value %d. Copied value %d", i, data[i], result[i])
+		}
+	}
+}
+
 func TestEncode(t *testing.T) {
 	encoder := NewEncoder(3, 3, 4)
 	input := []byte{7, 3, 2}
 	output := encoder.Encode(input)
 	expectedBlockData := []byte{7, 3, 2, 6, 7, 1}
 	expectedBlockTypes := []BlockType{Data, Data, Data, Checksum, Checksum, Checksum}
+	for i := range output {
+		if output[i].w[0] != expectedBlockData[i] || output[i].blockType != expectedBlockTypes[i] {
+			t.Errorf("Block [%d] is wrong. Expected value [%d]. Actual value [%d]", i, expectedBlockData[i], output[i].w[0])
+			t.Errorf("Block [%d] is wrong. Expected type [%d]. Actual type [%d]", i, expectedBlockTypes[i], output[i].blockType)
+		}
+	}
+}
+
+func TestEncodeGF256(t *testing.T) {
+	encoder := NewEncoder(6, 4, 8)
+	input := []byte{78, 92, 94, 21, 12, 36}
+	output := encoder.Encode(input)
+	expectedBlockData := []byte{78, 92, 94, 21, 12, 36, 113, 164, 115, 109}
+	expectedBlockTypes := []BlockType{Data, Data, Data, Data, Data, Data, Checksum, Checksum, Checksum, Checksum}
 	for i := range output {
 		if output[i].w[0] != expectedBlockData[i] || output[i].blockType != expectedBlockTypes[i] {
 			t.Errorf("Block [%d] is wrong. Expected value [%d]. Actual value [%d]", i, expectedBlockData[i], output[i].w[0])
