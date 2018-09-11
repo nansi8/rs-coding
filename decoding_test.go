@@ -1,6 +1,7 @@
 package rs_coding
 
 import (
+	"fmt"
 	"math/rand"
 	"testing"
 )
@@ -16,7 +17,10 @@ func TestDecode(t *testing.T) {
 		removeIndex := rand.Intn(len(output))
 		output = append(output[:removeIndex], output[removeIndex+1:]...)
 	}
-	decode := decoder.Decode(output)
+	decode, err := decoder.Decode(output)
+	if err != nil {
+		t.Fatal(err)
+	}
 	for i := range input {
 		if input[i] != decode[i] {
 			t.Errorf("Wrong decoding at index %d. Expected value: %d. Actual value %d", i, input[i], decode[i])
@@ -35,7 +39,10 @@ func TestString(t *testing.T) {
 		removeIndex := rand.Intn(len(output))
 		output = append(output[:removeIndex], output[removeIndex+1:]...)
 	}
-	decode := decoder.Decode(output)
+	decode, err := decoder.Decode(output)
+	if err != nil {
+		t.Fatal(err)
+	}
 	for i := range input {
 		if input[i] != decode[i] {
 			t.Errorf("Wrong decoding at index %d. Expected value: %d. Actual value %d", i, input[i], decode[i])
@@ -50,12 +57,18 @@ func TestFailed(t *testing.T) {
 
 	input := []byte{15, 199, 187, 129, 134, 57, 172, 72, 164, 198}
 	output := encoder.Encode(input)
-	for i := 0; i < checksumBlocks+1; i++ {
+	for i := 0; i < checksumBlocks+2; i++ {
 		removeIndex := rand.Intn(len(output))
 		output = append(output[:removeIndex], output[removeIndex+1:]...)
 	}
-	decode := decoder.Decode(output)
-	if decode != nil {
-		t.Errorf("Decoded data must be nil as %d blocks are corrupted instead of %d", checksumBlocks+1, checksumBlocks)
+	_, err := decoder.Decode(output)
+	if err == nil {
+		t.Error("Error must be thrown")
+	}
+	expected := fmt.Sprintf("Can not decode as %d blocks required, but only %d are present", dataBlocks, checksumBlocks-2)
+	if expected != err.Error() {
+		t.Errorf("Wrong error message")
+		t.Errorf("Expected: %s", expected)
+		t.Errorf("Actual: %s", err.Error())
 	}
 }

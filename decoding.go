@@ -1,10 +1,19 @@
 package rs_coding
 
 import (
+	"fmt"
 	"github.com/nansi8/math"
-	"log"
 	"sort"
 )
+
+type ErrNotSufficientBlocks struct {
+	RequiredBlocks int
+	ActualBlocks   int
+}
+
+func (e ErrNotSufficientBlocks) Error() string {
+	return fmt.Sprintf("Can not decode as %d blocks required, but only %d are present", e.RequiredBlocks, e.ActualBlocks)
+}
 
 type Decoder struct {
 	dataBlocks     int
@@ -20,13 +29,11 @@ func NewDecoder(dataBlocks, checksumBlocks int, degree byte) *Decoder {
 	return decoder
 }
 
-func (d *Decoder) Decode(blocks []Block) []byte {
+func (d *Decoder) Decode(blocks []Block) ([]byte, error) {
 	galoisAlgebra := math.New(d.degree)
 	blocksNumber := len(blocks)
 	if blocksNumber < d.dataBlocks {
-		// TODO: return error
-		log.Printf("Can not decode as %d blocks required, but only %d are present", d.dataBlocks, blocksNumber)
-		return nil
+		return nil, ErrNotSufficientBlocks{d.dataBlocks, blocksNumber}
 	}
 
 	decodedResult := make([]byte, 0)
@@ -52,7 +59,7 @@ func (d *Decoder) Decode(blocks []Block) []byte {
 		decoded := getCheckBlock(decodedMatrix)
 		decodedResult = append(decodedResult, decoded...)
 	}
-	return decodedResult
+	return decodedResult, nil
 }
 
 func (d *Decoder) getCheckMatrix(vandermore [][]byte) [][]byte {
