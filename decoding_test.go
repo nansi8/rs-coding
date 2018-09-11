@@ -65,7 +65,7 @@ func TestFailed(t *testing.T) {
 	if err == nil {
 		t.Error("Error must be thrown")
 	}
-	expected := fmt.Sprintf("Can not decode as %d blocks required, but only %d are present", dataBlocks, checksumBlocks-2)
+	expected := fmt.Sprintf("Can not decode as %d blocks required, but only %d are present", dataBlocks, dataBlocks-2)
 	if expected != err.Error() {
 		t.Errorf("Wrong error message")
 		t.Errorf("Expected: %s", expected)
